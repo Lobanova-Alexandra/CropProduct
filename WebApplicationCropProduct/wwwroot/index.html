@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Таблицы</title>
+    <style>
+        td {
+            padding: 5px;
+        }
+
+        button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h2>Культуры</h2>
+        <div>
+            <input type="hidden" id="cropId" />
+            <p>
+                Название культуры:<br />
+                <input id="cropName" />
+            </p>
+            <p>
+                <button id="saveBtn">Сохранить</button>
+                <button id="resetBtn">Сбросить</button>
+            </p>
+        </div>
+        <table border="1">
+            <thead><tr><th>ID</th><th>Название культуры</th><th></th></tr></thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h2>Параметры почвы справочник</h2>
+        <div>
+            <input type="hidden" id="S_RefId" />
+            <p>
+                Название параметра:<br />
+                <input id="S_RefName" />
+            </p>
+            <p>
+                <button id="saveBtn2">Сохранить</button>
+                <button id="resetBtn2">Сбросить</button>
+            </p>
+        </div>
+        <table border="1">
+            <thead><tr><th>ID</th><th>Название параметра</th><th></th></tr></thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function getCrops() {
+            const response = await fetch("api/crops", {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            });
+            if (response.ok === true) {
+                const crops = await response.json();
+                const rows = document.querySelector("tbody");
+                crops.forEach(crop => rows.append(row(crop)));
+            }
+        }
+
+
+        //культуры
+        async function getCrop(id) {
+            const responce = await fetch(`/api/crops/${id}`, {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            });
+            if (responce.ok == true) {
+                const crops = await responce.json();
+                document.getElementById("cropId").value = crops.id;
+                document.getElementById("cropName").value = crops.crop_name;
+            }
+            else {
+                const error = await responce.json();
+                console.log(error.message);
+            }
+        }
+
+        //добавление
+        async function createCrop(cropName) {
+
+            const response = await fetch("api/crops", {
+                method: "POST",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    crop_name: cropName
+                })
+            });
+            if (response.ok === true) {
+                const crop = await response.json();
+                document.querySelector("tbody").append(row(crop));
+            }
+            else {
+                const error = await response.json();
+                console.log(error.message);
+            }
+        }
+
+        //изменение
+        async function editCrop(cropId, cropName) {
+            const response = await fetch("api/crops", {
+                method: "PUT",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: cropId,
+                    crop_name: cropName
+                })
+            });
+            if (response.ok === true) {
+                const crop = await response.json();
+                document.querySelector(`tr[data-rowid='${crop.id}']`).replaceWith(row(crop));
+            }
+            else {
+                const error = await response.json();
+                console.log(error.message);
+            }
+        }
+
+        //удаление
+        async function deleteCrop(id) {
+            const responce = await fetch(`/api/crops/${id}`, {
+                method: "DELETE",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" }
+            });
+            if (responce.ok == true) {
+                const crop = await responce.json();
+                document.querySelector(`tr[data-rowid='${crop.id}']`).remove();
+            }
+            else {
+                const error = await responce.json();
+                console.log(error.message);
+            }
+        }
+
+        function reset() {
+            document.getElementById("cropId").value =
+                document.getElementById("cropName").value = "";
+        }
+
+        // добавление строки
+        function row(crop) {
+
+            const tr = document.createElement("tr");
+            tr.setAttribute("data-rowid", crop.id);
+
+            const idTd = document.createElement("td");
+            idTd.append(crop.id);
+            tr.append(idTd);
+
+            const nameTd = document.createElement("td");
+            nameTd.append(crop.crop_name);
+            tr.append(nameTd);
+
+            const linksTd = document.createElement("td");
+
+            const editLink = document.createElement("button");
+            editLink.append("Изменить");
+            editLink.addEventListener("click", async () => await getCrop(crop.id));
+            linksTd.append(editLink);
+
+            const removeLink = document.createElement("button");
+            removeLink.append("Удалить");
+            removeLink.addEventListener("click", async () => await deleteCrop(crop.id));
+
+            linksTd.append(removeLink);
+            tr.appendChild(linksTd);
+
+            return tr;
+        }
+
+        document.getElementById("resetBtn").addEventListener("click", () => reset()); //сбрсить
+
+        document.getElementById("saveBtn").addEventListener("click", async () => { //сохранить
+
+            const id = document.getElementById("cropId").value;
+            const name = document.getElementById("cropName").value;
+            if (id === "")
+                await createCrop(name);
+            else
+                await editCrop(id, name);
+            reset();
+        });
+
+        getCrops();
+
+    </script>
+</body>
+</html>

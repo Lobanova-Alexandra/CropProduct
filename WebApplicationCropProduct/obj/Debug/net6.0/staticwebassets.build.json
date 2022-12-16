@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "Hash": "xzsx2/pXcFZuxHX4F8MGwQ6fQp5vP6jOoqqz1FSkpFc=",
+  "Source": "WebApplicationCropProduct",
+  "BasePath": "_content/WebApplicationCropProduct",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "WebApplicationCropProduct\\wwwroot",
+      "Source": "WebApplicationCropProduct",
+      "ContentRoot": "C:\\Users\\User\\source\\repos\\WebApplicationCropProduct\\wwwroot\\",
+      "BasePath": "_content/WebApplicationCropProduct",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\User\\source\\repos\\WebApplicationCropProduct\\wwwroot\\index.html",
+      "SourceId": "WebApplicationCropProduct",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\User\\source\\repos\\WebApplicationCropProduct\\wwwroot\\",
+      "BasePath": "_content/WebApplicationCropProduct",
+      "RelativePath": "index.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    }
+  ]
+}
